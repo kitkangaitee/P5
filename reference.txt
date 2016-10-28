@@ -1,0 +1,7 @@
+http://scikit-learn.org/stable/index.html
+
+http://stackoverflow.com/
+
+https://en.wikipedia.org/wiki/Precision_and_recall
+
+https://discussions.udacity.com/
