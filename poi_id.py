@@ -120,7 +120,7 @@ ada = AdaBoostClassifier(random_state = 42)
 pipe_ada = Pipeline([("scaler", scaler), ("features", combined_features), ("ada", ada)])
 
 param_grid_ada = dict(features__pca__n_components=[1, 2, 3, None],
-                  features__univ_select__k=[1, 2, 3],
+                  features__univ_select__k=[1, 2, 3, 4],
                 ada__n_estimators=[5, 10, 30, 50])
 
 gs_ada = GridSearchCV(pipe_ada, param_grid=param_grid_ada, cv=sss, scoring='f1')
@@ -132,6 +132,16 @@ print gs_ada.best_params_
 print ' '
 print "Tester Classification report:" 
 test_classifier(clf_ada, my_dataset, features_list)
+
+# Getting feature score for SelectKBest
+features_k= gs_ada.best_params_['features__univ_select__k']
+SKB_k=SelectKBest(k=features_k)
+SKB_k.fit_transform(features, labels)   
+feature_scores = ['%.2f' % elem for elem in SKB_k.scores_]
+features_selected=[(features_list[i+1], feature_scores[i]) for i in SKB_k.get_support(indices=True)]
+features_selected=sorted(features_selected, key=lambda feature: float(feature[1]) , reverse=True)
+
+print features_selected
 
 dump_classifier_and_data(clf_ada, my_dataset, features_list)
 
